@@ -1,5 +1,9 @@
 import * as nj from 'numjs';
 
+export const modulo = (a, b) => {
+    return ((a % b) + b) % b;
+};
+
 export const insert = (array: nj.NdArray<any>, index: number, values: any[], axis: 0 | 1) => {
     if (axis === 0) {
         const firstPart = array.slice([0, index], null).tolist();
