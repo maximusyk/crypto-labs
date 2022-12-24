@@ -1,0 +1,36 @@
+{
+    "name": "crypto-labs",
+    "version": "1.0.0",
+    "description": "",
+    "scripts": {
+        "lab1": "node -r ts-node/register ./src/lab1.ts",
+        "lab2": "node -r ts-node/register ./src/lab2.ts",
+        "lab3": "node -r ts-node/register ./src/lab3.ts",
+        "lab4": "node -r ts-node/register ./src/lab4.ts",
+        "lab5": "node -r ts-node/register ./src/lab5.ts",
+        "lab6": "node -r ts-node/register ./src/lab6.ts",
+        "lab7": "node -r ts-node/register ./src/lab7.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/maximusyk/crypto-labs.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/maximusyk/crypto-labs/issues"
+    },
+    "homepage": "https://github.com/maximusyk/crypto-labs#readme",
+    "devDependencies": {
+        "@types/lodash": "^4.14.191",
+        "@types/numjs": "^0.16.2",
+        "@types/prompt-sync": "^4.2.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.9.4"
+    },
+    "dependencies": {
+        "lodash": "^4.17.21",
+        "numjs": "^0.16.1",
+        "prompt-sync": "^4.2.0"
+    }
+}
