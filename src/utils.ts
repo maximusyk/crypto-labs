@@ -67,9 +67,7 @@ export const phi = (n: number) => {
 };
 
 export const inverseElement_V2 = (a: number, n: number) => {
-    const pfi_n = phi(n);
-
-    return mod(Math.pow(a, pfi_n - 1), n);
+    return mod(Math.pow(a, phi(n) - 1), n);
 };
 
 export const millerRabinTest = (n: number, a: number) => {
@@ -129,30 +127,23 @@ export const decoding = (c: number, privateKey: number[]) => {
 };
 
 export const mul02 = (byte) => {
-    let byte_in_des = byte;
-    let inpyt_byte_in_bin = byte_in_des.toString(2);
-    let byte_shifted_in_des = byte_in_des << 1;
-    let byte_shifted_in_bin = byte_shifted_in_des.toString(2);
-    if (byte_shifted_in_bin.length > 8) {
-        byte_shifted_in_bin = byte_shifted_in_bin.slice(
-            byte_shifted_in_bin.length - 8,
-            byte_shifted_in_bin.length,
-        );
-        byte_shifted_in_des = parseInt(byte_shifted_in_bin, 2);
+    let byteInDes = byte;
+    let inputBinByte = byteInDes.toString(2);
+    let shiftedDesByte = byteInDes << 1;
+    let shiftedBinByte = shiftedDesByte.toString(2);
+    if (shiftedBinByte.length > 8) {
+        shiftedBinByte = shiftedBinByte.slice(shiftedBinByte.length - 8, shiftedBinByte.length);
+        shiftedDesByte = parseInt(shiftedBinByte, 2);
     }
-    let result = byte_shifted_in_des;
-    if (inpyt_byte_in_bin.length === 8 && inpyt_byte_in_bin[0] === '1') {
-        const val_xor = '00011011';
-        const val_xor_in_dec = parseInt(val_xor, 2);
-        result = byte_shifted_in_des ^ val_xor_in_dec;
+    let result = shiftedDesByte;
+    if (inputBinByte.length === 8 && inputBinByte[0] === '1') {
+        const XOR_VALUE = '00011011';
+        const XOR_DEC_VALUE = parseInt(XOR_VALUE, 2);
+        result = shiftedDesByte ^ XOR_DEC_VALUE;
     }
     return result;
 };
 
 export const mul03 = (byte) => {
-    const mul02_res = mul02(byte);
-    const mul02_res_in_des = mul02_res;
-    const byte_in_des = byte;
-    const result = mul02_res_in_des ^ byte_in_des;
-    return result;
+    return mul02(byte) ^ byte;
 };
