@@ -179,3 +179,59 @@ export const ElGamalDecryption = (a: number, b: number, x: number, p: number) =>
         .mod(p)
         .toJSNumber();
 };
+
+export const generateParams = () => {
+    const p = generatePrime(3000, 10000);
+    const g = getG(p);
+    const x = randomInt(1, p - 2);
+    const y = bigInt(g).modPow(bigInt(x), bigInt(p)).toJSNumber();
+    return [p, g, x, y];
+};
+
+export const singing = (p: number, g: number, x: number, y: number, m: number) => {
+    const k = generatePrime(2, p - 2);
+    const r = bigInt(g).modPow(bigInt(k), bigInt(p)).toJSNumber();
+    const s = mod(
+        bigInt(m)
+            .minus(bigInt(x).multiply(bigInt(r)))
+            .multiply(bigInt(inverseElement(k, p - 1)))
+            .toJSNumber(),
+        p - 1,
+    );
+    return [k, r, s];
+};
+
+export const verifySignature = (
+    r: number,
+    p: number,
+    s: number,
+    m: number,
+    y: number,
+    g: number,
+) => {
+    if (!((0 < r && r < p) || (0 < s && s < p - 1))) {
+        return false;
+    }
+    const temp = mod(
+        bigInt(y)
+            .modPow(bigInt(r), bigInt(p))
+            .multiply(bigInt(r).modPow(bigInt(s), bigInt(p)))
+            .toJSNumber(),
+        p,
+    );
+    if (bigInt(g).modPow(bigInt(m), bigInt(p)).toJSNumber() !== temp) {
+        return false;
+    }
+    return true;
+};
+
+export const getH = (m: string, p: number) => {
+    let H = 0;
+    for (let i = 0; i < m.length; i++) {
+        H += m.charCodeAt(i);
+    }
+    if (H > p - 1) {
+        H = H % p;
+    }
+    return H;
+};
