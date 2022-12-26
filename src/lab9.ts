@@ -145,7 +145,7 @@ function stringToRaw(string) {
     return raw;
 }
 
-const sha1 = (s) => {
+export const sha1 = (s) => {
     return rawToHex(sha1Raw(stringToRaw(s)));
 };
 

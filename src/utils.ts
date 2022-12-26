@@ -235,3 +235,94 @@ export const getH = (m: string, p: number) => {
     }
     return H;
 };
+
+export const getAllPointsEllipticCurve = (count: number) => {
+    const arr = [];
+    for (let x = 0; x < count; x++) {
+        for (let y = 0; y < count; y++) {
+            if (mod(Math.pow(y, 2) - (Math.pow(x, 3) + x + 1), count) === 0) {
+                arr.push([x, y]);
+            }
+        }
+    }
+    return arr;
+};
+
+export const addPoint = (firstPoint: number[], secondPoint: number[], count: number, a: number) => {
+    let numerator = 3 * Math.pow(firstPoint[0], 2) + a;
+    let denominator = 2 * firstPoint[1];
+    let temp = mod(Math.pow(inverseElement(denominator, count), 1), count) * numerator;
+    let s = mod(Math.pow(temp, 1), count);
+    let x = mod(Math.pow(Math.pow(s, 2) - 2 * firstPoint[0], 1), count);
+    let y = mod(Math.pow(s * (firstPoint[0] - x) - firstPoint[1], 1), count);
+
+    if (firstPoint[0] !== secondPoint[0] || firstPoint[1] !== secondPoint[1]) {
+        numerator = secondPoint[1] - firstPoint[1];
+        denominator = secondPoint[0] - firstPoint[0];
+        temp = mod(Math.pow(inverseElement(denominator, count), 1), count) * numerator;
+        s = mod(Math.pow(temp, 1), count);
+        x = mod(Math.pow(Math.pow(s, 2) - (secondPoint[0] + firstPoint[0]), 1), count);
+        y = mod(Math.pow(s * (secondPoint[0] - x) - secondPoint[1], 1), count);
+    }
+
+    return [x, y];
+};
+
+export const findOrderPoint = (firstPoint: number[], count: number, a: number) => {
+    let secondPoint = addPoint(firstPoint, firstPoint, count, a);
+    let d = 2;
+    while (firstPoint[0] !== secondPoint[0]) {
+        d += 1;
+        secondPoint = addPoint(firstPoint, secondPoint, count, a);
+    }
+    d += 1;
+    return d;
+};
+
+export const EDSA_singing = (
+    point: number[],
+    a: number,
+    module: number,
+    pointOrder: number,
+    h: number,
+) => {
+    let Q = point;
+    const d = randomInt(2, pointOrder - 2);
+    for (let i = 0; i < d - 1; i++) {
+        Q = addPoint(Q, point, module, a);
+    }
+    const k = randomInt(2, pointOrder - 2);
+    let C = point;
+    for (let i = 0; i < k - 1; i++) {
+        C = addPoint(C, point, module, a);
+    }
+    const r = mod(Math.pow(C[0], 1), pointOrder);
+    const temp = inverseElement(k, pointOrder);
+    const s = mod(Math.pow((h + d * r) * temp, 1), pointOrder);
+    return [r, s, Q];
+};
+
+export const EDSA_verifySignature = (
+    r: number,
+    s: number,
+    pointOrder: number,
+    Q: number[],
+    point: number[],
+    module: number,
+    a: number,
+    h: number,
+) => {
+    const u = mod(Math.pow(h * inverseElement(s, pointOrder), 1), pointOrder);
+    const v = mod(Math.pow(r * inverseElement(s, pointOrder), 1), pointOrder);
+    let pointFirst = point;
+    let pointSecond = Q;
+    for (let i = 0; i < u - 1; i++) {
+        pointFirst = addPoint(pointFirst, point, module, a);
+    }
+    for (let i = 0; i < v - 1; i++) {
+        pointSecond = addPoint(pointSecond, Q, module, a);
+    }
+    const finalPoint = addPoint(pointFirst, pointSecond, module, a);
+    const r_h = mod(Math.pow(finalPoint[0], 1), pointOrder);
+    return r === r_h;
+};
