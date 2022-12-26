@@ -5,11 +5,13 @@
     "scripts": {
         "lab1": "node -r ts-node/register ./src/lab1.ts",
         "lab2": "node -r ts-node/register ./src/lab2.ts",
-        "lab3": "node -r ts-node/register ./src/lab3.ts",
         "lab4": "node -r ts-node/register ./src/lab4.ts",
         "lab5": "node -r ts-node/register ./src/lab5.ts",
         "lab6": "node -r ts-node/register ./src/lab6.ts",
-        "lab7": "node -r ts-node/register ./src/lab7.ts"
+        "lab8": "node -r ts-node/register ./src/lab8.ts",
+        "lab9": "node -r ts-node/register ./src/lab9.ts",
+        "lab10": "node -r ts-node/register ./src/lab10.ts",
+        "lab11": "node -r ts-node/register ./src/lab11.ts"
     },
     "repository": {
         "type": "git",

@@ -35,7 +35,7 @@ export const gcdex = (a: number, b: number) => {
 };
 
 export const inverseElement = (a: number, n: number) => {
-    const [d, x, y] = gcdex(a, n);
+    const [d, x] = gcdex(a, n);
     if (d !== 1) {
         throw new Error(`a(${a}) and n(${n}) are not mutually prime`);
     }
@@ -54,7 +54,7 @@ export const phi = (n: number) => {
     }
 
     // init
-    var result = 1;
+    let result = 1;
 
     // walk through all integers up to n
     for (let i = 2; i < n; i++) {
@@ -106,21 +106,21 @@ export const isPrime = (n: number) => {
     return true;
 };
 
-export const generatePrime = (lastRangeValue: number) => {
-    let value = randomInt(3, lastRangeValue);
+export const generatePrime = (firstRangeValue: number, lastRangeValue: number) => {
+    let value = randomInt(firstRangeValue, lastRangeValue);
     while (!isPrime(value)) {
-        value = randomInt(3, lastRangeValue);
+        value = randomInt(firstRangeValue, lastRangeValue);
     }
     return value;
 };
 
-export const encoding = (m: number, publicKey: number[]) => {
+export const RSA_Encoding = (m: number, publicKey: number[]) => {
     const n = publicKey[0];
     const e = publicKey[1];
     return bigInt(m).modPow(bigInt(e), bigInt(n)).toJSNumber();
 };
 
-export const decoding = (c: number, privateKey: number[]) => {
+export const RSA_Decoding = (c: number, privateKey: number[]) => {
     const n = privateKey[0];
     const d = privateKey[1];
     return bigInt(c).modPow(bigInt(d), bigInt(n)).toJSNumber();
@@ -146,4 +146,36 @@ export const mul02 = (byte) => {
 
 export const mul03 = (byte) => {
     return mul02(byte) ^ byte;
+};
+
+export const isPrimitiveRoot = (g: number, p: number) => {
+    for (let i = 1; i < p - 1; i++) {
+        if (mod(Math.pow(g, i), p) === 1) {
+            return false;
+        }
+    }
+    return true;
+};
+
+export const getG = (p: number) => {
+    while (true) {
+        const g = randomInt(2, p);
+        if (isPrimitiveRoot(g, p)) {
+            return g;
+        }
+    }
+};
+
+export const ElGamalEncryption = (value: number, p: number, g: number, y: number) => {
+    const k = randomInt(1, p - 1);
+    const a = bigInt(g).modPow(bigInt(k), bigInt(p)).toJSNumber();
+    const b = mod(bigInt(y).modPow(bigInt(k), bigInt(p)).multiply(bigInt(value)).toJSNumber(), p);
+    return [a, b];
+};
+
+export const ElGamalDecryption = (a: number, b: number, x: number, p: number) => {
+    return bigInt(b)
+        .multiply(bigInt(a).pow(p - 1 - x))
+        .mod(p)
+        .toJSNumber();
 };

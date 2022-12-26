@@ -1,15 +1,15 @@
 import { randomInt } from 'mathjs';
 import * as promptSync from 'prompt-sync';
-import { decoding, encoding, gcdex, generatePrime, inverseElement } from './utils';
+import { gcdex, generatePrime, inverseElement, RSA_Decoding, RSA_Encoding } from './utils';
 
 const prompt = promptSync();
 
 const lastRangeValue = 10000;
-const p = generatePrime(lastRangeValue);
-let q = generatePrime(lastRangeValue);
+const p = generatePrime(3, lastRangeValue);
+let q = generatePrime(3, lastRangeValue);
 
 while (p === q) {
-    q = generatePrime(lastRangeValue);
+    q = generatePrime(3, lastRangeValue);
 }
 const n = p * q;
 const phi = (p - 1) * (q - 1);
@@ -29,8 +29,8 @@ while (!m.match(/^\d+$/) || parseInt(m) < 1 || parseInt(m) > n - 2) {
     m = prompt(`Enter the number in range [1;${n - 2}]: `);
 }
 
-const c = encoding(parseInt(m), publicKey);
+const c = RSA_Encoding(parseInt(m), publicKey);
 console.log(`Encoded message: ${c}`);
 
-const decodedM = decoding(c, privateKey);
+const decodedM = RSA_Decoding(c, privateKey);
 console.log(`Decoded message: ${decodedM}`);
